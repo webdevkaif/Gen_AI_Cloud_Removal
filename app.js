@@ -57,6 +57,10 @@ document.addEventListener('DOMContentLoaded', () => {
       title: 'Overview & Context',
       desc: 'CLEAR_SEE: See through every cloud — Generative AI-based Cloud Removal & Surface Reconstruction'
     },
+    agent: {
+      title: 'Problem AI Agent | AeroSense-10',
+      desc: 'Autonomous intelligence agent explaining optical cloud degradation, Mie scattering, SAR penetration physics, and generative inpainting challenges'
+    },
     sandbox: {
       title: 'Interactive Sandbox Simulator',
       desc: 'Simulate, adjust, and compare Generative AI reconstructions using multi-modal sensor inputs'
@@ -90,6 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- Background Image Mapping for Tabs ---
   const tabBackgrounds = {
     overview: '/bg_overview.jpg',
+    agent: '/bg_overview.jpg',
     sandbox: '/bg_sandbox.jpg',
     threedee: '/bg_threedee.png',
     architectures: '/bg_threedee.png',
@@ -158,6 +163,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (pageTitles[tabId]) {
       if (dynamicPageTitle) dynamicPageTitle.innerText = pageTitles[tabId].title;
       if (dynamicPageDesc) dynamicPageDesc.innerText = pageTitles[tabId].desc;
+    }
+
+    // Update floating agent context
+    if (typeof updateFloatingAgentContext === 'function') {
+      updateFloatingAgentContext(tabId);
+    }
+
+    // Trigger Problem AI Agent initialization if selected
+    if (tabId === 'agent') {
+      setTimeout(initAgentTab, 50);
     }
 
     // Trigger canvas resize and rendering if sandbox is selected
@@ -1401,11 +1416,528 @@ document.addEventListener('DOMContentLoaded', () => {
     overlay.style.clipPath = `polygon(${dehazingPosition}% 0, 100% 0, 100% 100%, ${dehazingPosition}% 100%)`;
   }
 
+  /* ==========================================================================
+     PROBLEM AI AGENT CONTROLLER & KNOWLEDGE ENGINE
+     ========================================================================== */
+
+  let agentVoiceEnabled = false;
+  let agentChatInitialized = false;
+  let isAgentTyping = false;
+
+  // Comprehensive Knowledge Repository on the Problem
+  const AGENT_PROBLEM_KNOWLEDGE = {
+    'welcome': {
+      title: 'Mission Problem Briefing: CLEAR_SEE Optical Degradation',
+      html: `
+        <p>Greetings, Commander. I am <strong>AeroSense-10</strong>, your Autonomous Remote Sensing Physicist & Problem Diagnostic Agent.</p>
+        <p style="margin-top: 0.5rem;">The problem we are addressing is <strong>critical</strong>: India's high-resolution optical satellite, <strong>ISRO LISS-IV</strong> (5.8m spatial resolution), is effectively blinded across the North Eastern Region (NER) for up to <strong>80% of the year</strong> due to persistent, impenetrable cloud cover.</p>
+        <p style="margin-top: 0.5rem;">This creates three major crises:</p>
+        <ul>
+          <li><strong>Zero Optical Visibility:</strong> Visible/NIR sunlight is extinguished by Mie scattering.</li>
+          <li><strong>Disaster Monitoring Failure:</strong> Cloud shadows mimic deep floodwaters, corrupting relief efforts.</li>
+          <li><strong>Temporal Obsolescence:</strong> By the time a clear pass occurs 4–5 months later, ground reality has completely transformed.</li>
+        </ul>
+        <p style="margin-top: 0.5rem; color: var(--color-primary);">Select any prompt chip above, type your question below, or run the live scene auditor on the right!</p>
+      `,
+      speech: "Greetings. I am AeroSense-10. The problem we address is that ISRO LISS-IV optical satellites are blinded across North East India for up to eighty percent of the year due to persistent cloud cover. This causes optical blackout, false flood classifications, and leaves disaster response teams without real-time data."
+    },
+    'core-problem': {
+      title: 'The Core Remote Sensing Crisis',
+      html: `
+        <h4>The Core Problem: Optical Sensor Blindness & Information Void</h4>
+        <p>The <strong>Resourcesat-2/2A LISS-IV sensor</strong> operates in three multi-spectral bands: <code>Green (0.52–0.59 µm)</code>, <code>Red (0.62–0.68 µm)</code>, and <code>Near-Infrared (0.77–0.86 µm)</code> at a fine 5.8m ground resolution.</p>
+        <p style="margin-top: 0.5rem;">However, optical remote sensing relies entirely on reflected solar irradiance. When clouds obstruct the line of sight:</p>
+        <ul>
+          <li><strong>Direct Transmission Extinction:</strong> Cloud optical thickness $\\tau > 50$, meaning transmission <code>T(x) = exp(-τ) ≈ 0.0000</code>.</li>
+          <li><strong>Complete Information Loss:</strong> Ground pixels receive 0 direct illumination, replaced by saturated cloud-top diffuse reflection.</li>
+          <li><strong>Critical Coverage Blackouts:</strong> Agricultural monitoring, border defense surveillance, and landslide tracking in the North East are halted during the entire 5-month monsoon season.</li>
+        </ul>
+        <p style="margin-top: 0.5rem;"><strong>The Solution:</strong> Conditioning generative latent diffusion on cloud-penetrating Sentinel-1 SAR C-band microwave radar data to reconstruct the missing spectral bands.</p>
+      `,
+      speech: "The core problem is optical sensor blindness. ISRO LISS-IV relies on sunlight. When dense clouds cover the terrain, optical transmission drops to zero. This halts agricultural monitoring, border surveillance, and disaster response during the five-month monsoon season."
+    },
+    'ner-monsoon': {
+      title: 'Why North East India (NER) is Uniquely Vulnerable',
+      html: `
+        <h4>Geographical & Orographic Trap in North East India</h4>
+        <p>The North Eastern Region (NER)—encompassing Assam, Meghalaya, Arunachal Pradesh, Sikkim, Nagaland, and Manipur—is an extreme planetary hotspot for cloud cover:</p>
+        <ul>
+          <li><strong>Orographic Uplift:</strong> Strong moisture-laden winds from the Bay of Bengal slam into the steep Meghalaya plateau (Cherrapunji & Mawsynram) and the Himalayan foothills, forcing air upward and creating near-continuous condensation.</li>
+          <li><strong>World's Highest Rainfall:</strong> Cherrapunji averages over 11,700 mm of annual rainfall, producing thick convective cumulonimbus layers reaching 12 km altitude.</li>
+          <li><strong>Unbroken Cloud Canopy:</strong> Satellite analysis shows cloud frequency exceeds <strong>75% to 88%</strong> between May and September. In a typical monsoon month, there are zero completely cloud-free optical passes.</li>
+        </ul>
+        <p style="margin-top: 0.5rem; color: var(--color-warning);">Without cloud removal or radar fusion, high-resolution optical earth observation is rendered useless for 8 months of the year.</p>
+      `,
+      speech: "North East India is uniquely vulnerable because moisture from the Bay of Bengal is forced upward by the steep Meghalaya plateau and Himalayas. Cherrapunji experiences the world's highest rainfall. Cloud cover exceeds eighty percent from May to September, leaving zero cloud-free satellite passes for months."
+    },
+    'optical-physics': {
+      title: 'Atmospheric Physics: Mie Scattering Extinction',
+      html: `
+        <h4>Why Optical Light Cannot Penetrate Cloud Droplets</h4>
+        <p>Atmospheric scattering behavior is governed by the <strong>Size Parameter</strong>: <code>x = 2πr / λ</code>, where <code>r</code> is particle radius and <code>λ</code> is electromagnetic wavelength.</p>
+        <ul>
+          <li><strong>Cloud Water Droplet Size:</strong> Droplet radii range from <code>10 µm to 30 µm</code>.</li>
+          <li><strong>Optical Visible/NIR Wavelength:</strong> <code>λ = 0.5 µm to 0.86 µm</code>.</li>
+          <li><strong>Mie Scattering Regime:</strong> Because <code>x ≈ 70 to 350 >> 1</code>, we are squarely in the non-selective Mie scattering domain.</li>
+          <li><strong>Scattering Cross-Section:</strong> Photons undergo hundreds of random diffuse scattering bounces. Radiative transfer models confirm zero forward ballistic transmission.</li>
+        </ul>
+        <p style="margin-top: 0.5rem;">By contrast, <strong>C-band SAR microwave radar</strong> has a wavelength of <code>λ = 5.6 cm (56,000 µm)</code>. For radar, <code>x ≈ 0.002 << 1</code> (Rayleigh limit), meaning cloud droplets create negligible attenuation (&lt; 0.15 dB/km).</p>
+      `,
+      speech: "Optical light cannot penetrate clouds due to Mie scattering. Cloud water droplets are twenty times larger than visible wavelengths. Photons scatter randomly in all directions. Conversely, Sentinel-1 radar uses microwaves with a 5.6 centimeter wavelength, allowing signals to pass through clouds unimpeded."
+    },
+    'shadow-deception': {
+      title: 'Cloud Shadow Deception & False Flood Disaster Alerts',
+      html: `
+        <h4>The Downstream Catastrophe: False Water Bodies</h4>
+        <p>Clouds do not just block the sky; their towering vertical heights cast vast, dark <strong>cloud shadows</strong> across valleys and floodplains.</p>
+        <ul>
+          <li><strong>Spectrally Identical to Deep Water:</strong> In LISS-IV optical bands, shadowed vegetation and shadowed concrete reflect less than <code>2% to 3%</code> of NIR and Red irradiance—virtually identical to the spectral reflectance of open standing water!</li>
+          <li><strong>Automated Water Index Failure:</strong> Indices like <code>NDWI = (Green - NIR) / (Green + NIR)</code> produce high positive values inside cloud shadows, tricking automated flood-mapping pipelines.</li>
+          <li><strong>Massive False Alarms:</strong> During catastrophic Brahmaputra floods in Assam, uncorrected optical imagery misidentifies thousands of dry villages as inundated, directing disaster relief teams to the wrong locations.</li>
+        </ul>
+        <p style="margin-top: 0.5rem;">Our SAR fusion solves this: SAR radar backscatter differentiates smooth specular water from rough shadowed ground in decibels.</p>
+      `,
+      speech: "Cloud shadows create a dangerous downstream deception. They reduce optical reflectance to under three percent, mimicking open water. Automated disaster pipelines misclassify shadows as flooded land. SAR radar backscatter eliminates this by differentiating water smoothness from land roughness."
+    },
+    'sar-radar': {
+      title: 'Sentinel-1 SAR: The Cloud-Penetrating Backbone',
+      html: `
+        <h4>Why Sentinel-1 SAR Radar is the Solution</h4>
+        <p><strong>Synthetic Aperture Radar (SAR)</strong> is an active microwave sensor. Sentinel-1 transmits at <code>5.405 GHz (C-band)</code> with dual polarization: <code>VV</code> (vertical transmit, vertical receive) and <code>VH</code> (vertical transmit, horizontal receive).</p>
+        <ul>
+          <li><strong>All-Weather, Day-or-Night:</strong> SAR provides its own electromagnetic illumination and easily penetrates rain, thick cumulonimbus, fog, and nighttime conditions.</li>
+          <li><strong>Physical Surface Geometry:</strong> While SAR lacks color, it measures surface roughness, dielectric permittivity, building corner reflectors, and topographic slopes.</li>
+          <li><strong>The Information Asymmetry Dilemma:</strong> Optical has rich multi-spectral color (Green, Red, NIR) but 0 cloud penetration. SAR has 100% cloud penetration but 0 color.</li>
+          <li><strong>Generative AI Fusion:</strong> Latent Diffusion models learn the cross-modal translation, using SAR geometry to ground the inpainting of multi-spectral optical reflectance.</li>
+        </ul>
+      `,
+      speech: "Sentinel-1 SAR operates at 5.4 gigahertz in the microwave spectrum. It penetrates all clouds day or night. While SAR has zero color, it captures physical geometry, surface roughness, and buildings. Our AI fuses SAR geometry with optical models to reconstruct the missing colors."
+    },
+    'hallucination': {
+      title: 'The AI Hallucination Dilemma in Earth Observation',
+      html: `
+        <h4>Preventing AI Hallucinations in Critical Satellite Imagery</h4>
+        <p>If you feed a cloudy image into a generic generative AI model (such as an unconditional Stable Diffusion or CycleGAN), it will produce a visually pleasant image—but it may <strong>hallucinate</strong> buildings that don't exist, remove real roads, or fabricate fictitious rivers.</p>
+        <ul>
+          <li><strong>High Stakes in Remote Sensing:</strong> A hallucinated bridge or misaligned river boundary in ISRO satellite data can lead to catastrophic urban planning and military intelligence errors.</li>
+          <li><strong>Physical Grounding via Cross-Attention:</strong> In CLEAR_SEE, our Latent Diffusion Model conditions its reverse diffusion steps directly on Sentinel-1 SAR feature maps.</li>
+          <li><strong>Strict Bounds:</strong> If the SAR radar shows high double-bounce backscatter (a building), the generative model is constrained to generate a structural settlement pixel, preventing spatial hallucination.</li>
+        </ul>
+      `,
+      speech: "The danger of using generative AI is hallucination. A naive model might invent fake roads or nonexistent villages. In CLEAR_SEE, we constrain the diffusion process with real-time Sentinel-1 SAR radar backscatter, ensuring every generated pixel is physically grounded in true terrain geometry."
+    },
+    'mosaicking': {
+      title: 'Why Multi-Temporal Mosaicking Fails in Monsoons',
+      html: `
+        <h4>The Failure of Multi-Temporal Clear Image Compositing</h4>
+        <p>A common suggestion is: <em>"Why not just copy clear pixels from last month's satellite pass?"</em></p>
+        <ul>
+          <li><strong>Zero Cloud-Free Passes for Months:</strong> In places like Cherrapunji and upper Assam, optical satellites do not obtain a single cloud-free acquisition between late May and mid-September (120+ days).</li>
+          <li><strong>Rapidly Evolving Terrain:</strong> Monsoons bring rapid flash flooding, river course migration along the Brahmaputra, and sudden crop germination. A 90-day-old clear reference image represents a completely different reality.</li>
+          <li><strong>Phenological Mismatch:</strong> Pasture greenness and forest canopy reflectance shift dramatically between seasons. Pasting old pixels creates jarring temporal frankenstein artifacts.</li>
+        </ul>
+      `,
+      speech: "Multi-temporal mosaicking fails because during monsoons, no cloud-free passes occur for up to four months. By the time a clear pass arrives, crop stages and floodwaters have changed completely. Pasting old images produces false, outdated maps."
+    },
+    'dehazing-vs-cloud': {
+      title: 'Terrestrial Dehazing vs Satellite Cloud Removal',
+      html: `
+        <h4>Dehazing vs Cloud Removal: A Critical Physical Distinction</h4>
+        <p>Ground-level photo dehazing (like the brick building comparison in our 3D tab) is <strong>fundamentally different</strong> from satellite cloud removal:</p>
+        <ul>
+          <li><strong>Terrestrial Atmospheric Haze:</strong> Composed of tiny aerosol particles (smoke, dust, humidity). Optical transmission is attenuated but remains non-zero: <code>0 &lt; T(x) &lt; 1</code>. Low-frequency outlines and high-contrast edges are still partially visible.</li>
+          <li><strong>Satellite Cumulus & Cumulonimbus Clouds:</strong> Water droplets are massive, creating dense optical depths <code>τ > 50</code> and transmission <code>T(x) = 0</code>. Not a single photon from the surface reaches the satellite detector.</li>
+          <li><strong>Mathematical Impossibility:</strong> Single-image dehazing methods (Dark Channel Prior) rely on inverting the attenuation formula: <code>J(x) = (I(x) - A) / T(x)</code>. When <code>T(x) = 0</code>, division by zero occurs! You cannot dehaze an opaque cloud without a secondary penetrating sensor (SAR).</li>
+        </ul>
+      `,
+      speech: "Terrestrial photo dehazing works because haze preserves some light transmission. But satellite clouds have zero optical transmission. Inverting the haze equation results in division by zero. That is why satellite cloud removal mathematically requires cloud-penetrating radar."
+    }
+  };
+
+  // Agent Natural Language Matcher
+  function resolveAgentQuery(rawQuery) {
+    const q = rawQuery.toLowerCase().trim();
+    if (!q) return AGENT_PROBLEM_KNOWLEDGE['core-problem'];
+
+    if (q.includes('ner') || q.includes('north east') || q.includes('india') || q.includes('cherrapunji') || q.includes('shillong') || q.includes('assam') || q.includes('monsoon')) {
+      return AGENT_PROBLEM_KNOWLEDGE['ner-monsoon'];
+    }
+    if (q.includes('physic') || q.includes('mie') || q.includes('scattering') || q.includes('rayleigh') || q.includes('wavelength') || q.includes('droplet') || q.includes('optic')) {
+      return AGENT_PROBLEM_KNOWLEDGE['optical-physics'];
+    }
+    if (q.includes('shadow') || q.includes('water') || q.includes('flood') || q.includes('lulc') || q.includes('misclassif') || q.includes('dark')) {
+      return AGENT_PROBLEM_KNOWLEDGE['shadow-deception'];
+    }
+    if (q.includes('sar') || q.includes('radar') || q.includes('sentinel') || q.includes('c-band') || q.includes('microwave') || q.includes('penetrat')) {
+      return AGENT_PROBLEM_KNOWLEDGE['sar-radar'];
+    }
+    if (q.includes('hallucin') || q.includes('fake') || q.includes('risk') || q.includes('invent') || q.includes('fictitious') || q.includes('ground')) {
+      return AGENT_PROBLEM_KNOWLEDGE['hallucination'];
+    }
+    if (q.includes('mosaic') || q.includes('past') || q.includes('month') || q.includes('clear photo') || q.includes('composite') || q.includes('old') || q.includes('history')) {
+      return AGENT_PROBLEM_KNOWLEDGE['mosaicking'];
+    }
+    if (q.includes('dehaz') || q.includes('haze') || q.includes('fog') || q.includes('terrestrial') || q.includes('dcp') || q.includes('building')) {
+      return AGENT_PROBLEM_KNOWLEDGE['dehazing-vs-cloud'];
+    }
+    if (q.includes('liss') || q.includes('isro') || q.includes('problem') || q.includes('core') || q.includes('clear_see') || q.includes('what is')) {
+      return AGENT_PROBLEM_KNOWLEDGE['core-problem'];
+    }
+
+    // Default intelligent custom response
+    return {
+      title: `Analysis of Inquiry: "${rawQuery}"`,
+      html: `
+        <h4>AeroSense Diagnostic Assessment</h4>
+        <p>You asked: <em>"${rawQuery}"</em></p>
+        <p style="margin-top: 0.5rem;">From a satellite remote sensing physics standpoint, this connects directly to the core bottleneck of <strong>ISRO LISS-IV optical degradation</strong> in cloudy environments:</p>
+        <ul>
+          <li><strong>Physical Blockage:</strong> Cloud water droplets extinguish visible/NIR radiance via Mie scattering, leaving zero ground surface radiance on optical sensors.</li>
+          <li><strong>Downstream Misinterpretation:</strong> Dark cloud shadows are misclassified as floodwater; bright cloud peaks saturate radiometric wells.</li>
+          <li><strong>Multi-Modal Solution:</strong> Combining <strong>Sentinel-1 SAR C-band microwave radar (5.6 cm)</strong> with Generative AI (Latent Diffusion) reconstructs the hidden ground geometry without spatial hallucinations.</li>
+        </ul>
+        <p style="margin-top: 0.5rem; color: var(--color-primary);">Click any of the suggested prompt chips above for an in-depth scientific breakdown!</p>
+      `,
+      speech: `Regarding your question, the key remote sensing problem is that optical sensors like LISS-IV are physically blocked by cloud droplets, leading to massive data blackouts and shadow water misclassifications, which requires multi-modal SAR fusion to solve.`
+    };
+  }
+
+  // Voice Speech Synthesizer
+  function speakAgentText(text) {
+    if (!agentVoiceEnabled || !('speechSynthesis' in window)) return;
+    try {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 1.05;
+      utterance.pitch = 1.0;
+      
+      const voices = window.speechSynthesis.getVoices();
+      const preferred = voices.find(v => v.lang.startsWith('en') && (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Samantha')));
+      if (preferred) utterance.voice = preferred;
+
+      const voiceBtn = document.getElementById('btn-agent-voice-toggle');
+      utterance.onstart = () => {
+        if (voiceBtn) voiceBtn.classList.add('active');
+      };
+      utterance.onend = () => {
+        if (voiceBtn) voiceBtn.classList.remove('active');
+      };
+      utterance.onerror = () => {
+        if (voiceBtn) voiceBtn.classList.remove('active');
+      };
+
+      window.speechSynthesis.speak(utterance);
+    } catch (e) {
+      console.warn('Speech synthesis error:', e);
+    }
+  }
+
+  // Append Message to Chat Feed with Typing Effect
+  function appendAgentMessage(knowledgeItem) {
+    const feed = document.getElementById('agent-chat-feed');
+    if (!feed) return;
+
+    const msgEl = document.createElement('div');
+    msgEl.className = 'chat-msg agent';
+
+    const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    msgEl.innerHTML = `
+      <div class="chat-avatar">AI</div>
+      <div class="chat-bubble">
+        <div class="bubble-content-wrap">
+          <div class="typing-dots"><span></span><span></span><span></span></div>
+        </div>
+        <div class="chat-bubble-footer">
+          <span>AeroSense-10 • ${timeStr}</span>
+          <button class="btn-speak-bubble" title="Listen to response">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+            <span>Listen</span>
+          </button>
+        </div>
+      </div>
+    `;
+
+    feed.appendChild(msgEl);
+    feed.scrollTop = feed.scrollHeight;
+
+    // Simulate typing delay
+    setTimeout(() => {
+      const contentWrap = msgEl.querySelector('.bubble-content-wrap');
+      if (contentWrap) {
+        contentWrap.innerHTML = knowledgeItem.html;
+      }
+      feed.scrollTop = feed.scrollHeight;
+
+      // Connect speak button
+      const speakBtn = msgEl.querySelector('.btn-speak-bubble');
+      if (speakBtn) {
+        speakBtn.addEventListener('click', () => {
+          speakAgentText(knowledgeItem.speech || knowledgeItem.title);
+        });
+      }
+
+      // Auto-speak if voice briefing is active
+      if (agentVoiceEnabled) {
+        speakAgentText(knowledgeItem.speech || knowledgeItem.title);
+      }
+    }, 400);
+  }
+
+  function appendUserMessage(text) {
+    const feed = document.getElementById('agent-chat-feed');
+    if (!feed) return;
+
+    const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const msgEl = document.createElement('div');
+    msgEl.className = 'chat-msg user';
+    msgEl.innerHTML = `
+      <div class="chat-avatar">U</div>
+      <div class="chat-bubble">
+        <p>${text.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>
+        <div class="chat-bubble-footer" style="justify-content: flex-end;">
+          <span>You • ${timeStr}</span>
+        </div>
+      </div>
+    `;
+
+    feed.appendChild(msgEl);
+    feed.scrollTop = feed.scrollHeight;
+  }
+
+  // Interactive Scenario Problem Auditor
+  function runSceneProblemAudit() {
+    const regionSelect = document.getElementById('auditor-region');
+    const cloudSlider = document.getElementById('auditor-cloud-range');
+    const scannerBar = document.getElementById('hud-scanner-bar');
+    
+    const extinctionEl = document.getElementById('hud-extinction');
+    const shadowRiskEl = document.getElementById('hud-shadow-risk');
+    const blindnessEl = document.getElementById('hud-blindness');
+    const sarCuesEl = document.getElementById('hud-sar-cues');
+    const diagnosisTextEl = document.getElementById('hud-diagnosis-text');
+    const timestampEl = document.getElementById('hud-timestamp');
+
+    if (!regionSelect || !cloudSlider) return;
+
+    const region = regionSelect.value;
+    const cloudCoverage = parseInt(cloudSlider.value, 10);
+
+    // Trigger visual scan effect
+    if (scannerBar) {
+      scannerBar.classList.add('scanning');
+      setTimeout(() => scannerBar.classList.remove('scanning'), 1600);
+    }
+
+    if (timestampEl) {
+      timestampEl.innerText = new Date().toLocaleTimeString();
+    }
+
+    // Physics calculations
+    const extinctionDb = (-(12 + (cloudCoverage / 100) * 32)).toFixed(1);
+    const blindnessPct = Math.min(99.5, (cloudCoverage * 1.02)).toFixed(1);
+    const shadowRiskPct = Math.min(96.0, (30 + cloudCoverage * 0.65)).toFixed(1);
+    const sarCuesPct = (99.2 - (cloudCoverage * 0.02)).toFixed(1);
+
+    if (extinctionEl) extinctionEl.innerText = `${extinctionDb} dB`;
+    if (blindnessEl) blindnessEl.innerText = `${blindnessPct}%`;
+    if (shadowRiskEl) shadowRiskEl.innerText = `${shadowRiskPct}%`;
+    if (sarCuesEl) sarCuesEl.innerText = `${sarCuesPct}%`;
+
+    // Region customized problem verdict
+    const regionNames = {
+      shillong: 'Shillong Plateau (Dense Pine Forests & Valley Ridges)',
+      cherrapunji: 'Cherrapunji / Sohra (World Extreme Orographic Barrier)',
+      guwahati: 'Guwahati (Riverine Brahmaputra Basin & Urban Grid)',
+      gangtok: 'Gangtok / Kanchenjunga (High Snow Peaks & Mountain Passes)'
+    };
+
+    let verdict = '';
+    if (cloudCoverage > 75) {
+      verdict = `CRITICAL DEGRADATION: At ${cloudCoverage}% cloud occlusion in ${regionNames[region]}, optical transmittance is effectively 0. Mie scattering obliterates all 3 LISS-IV bands. Cloud shadows create a ${shadowRiskPct}% risk of false-positive flood water detection. Standard optical models fail completely; Sentinel-1 C-band SAR radar backscatter (VV/VH) is MANDATORY to bypass cloud particles.`;
+    } else if (cloudCoverage > 40) {
+      verdict = `MODERATE-TO-HEAVY CONTAMINATION: At ${cloudCoverage}% cloud cover, fractured cumulus clouds cast localized shadows across ${regionNames[region]}. Normalized Difference Vegetation Index (NDVI) values in shadows fall by up to 60%, misclassifying healthy canopy as stressed or dead. Multi-modal cross-attention fusion is required.`;
+    } else {
+      verdict = `MILD CIRRUS HAZE: At ${cloudCoverage}% thin cirrus in ${regionNames[region]}, low-frequency terrain contours remain partially detectable, but radiometric accuracy is attenuated by ${extinctionDb} dB. Dark channel prior baseline can assist, but multi-modal SAR fusion ensures exact spectral fidelity.`;
+    }
+
+    if (diagnosisTextEl) {
+      diagnosisTextEl.innerText = verdict;
+    }
+
+    if (agentVoiceEnabled) {
+      speakAgentText(`Audit complete for ${regionNames[region]}. At ${cloudCoverage} percent cloud cover, optical loss is ${extinctionDb} decibels. ${verdict}`);
+    }
+  }
+
+  // Initialize Problem Agent Tab
+  function initAgentTab() {
+    if (!agentChatInitialized) {
+      agentChatInitialized = true;
+      const feed = document.getElementById('agent-chat-feed');
+      if (feed && feed.children.length === 0) {
+        appendAgentMessage(AGENT_PROBLEM_KNOWLEDGE['welcome']);
+      }
+
+      // Inquiry Chip Listeners
+      const chips = document.querySelectorAll('.agent-chip');
+      chips.forEach(chip => {
+        chip.addEventListener('click', () => {
+          const key = chip.getAttribute('data-query');
+          const promptText = chip.innerText.trim();
+          appendUserMessage(promptText);
+          const response = AGENT_PROBLEM_KNOWLEDGE[key] || resolveAgentQuery(promptText);
+          appendAgentMessage(response);
+        });
+      });
+
+      // Chat Input Field
+      const inputField = document.getElementById('agent-user-input');
+      const sendBtn = document.getElementById('btn-agent-send');
+
+      const handleUserSubmit = () => {
+        if (!inputField) return;
+        const query = inputField.value.trim();
+        if (!query) return;
+        inputField.value = '';
+        appendUserMessage(query);
+        const response = resolveAgentQuery(query);
+        appendAgentMessage(response);
+      };
+
+      if (sendBtn) sendBtn.addEventListener('click', handleUserSubmit);
+      if (inputField) {
+        inputField.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') handleUserSubmit();
+        });
+      }
+
+      // Voice Toggle Button
+      const voiceToggleBtn = document.getElementById('btn-agent-voice-toggle');
+      const voiceBtnText = document.getElementById('agent-voice-btn-text');
+      if (voiceToggleBtn) {
+        voiceToggleBtn.addEventListener('click', () => {
+          agentVoiceEnabled = !agentVoiceEnabled;
+          if (agentVoiceEnabled) {
+            voiceToggleBtn.classList.add('active');
+            if (voiceBtnText) voiceBtnText.innerText = 'Voice Briefing: ON';
+            speakAgentText('Voice briefing activated. AeroSense is ready to explain the remote sensing problem.');
+          } else {
+            voiceToggleBtn.classList.remove('active');
+            if (voiceBtnText) voiceBtnText.innerText = 'Voice Briefing: OFF';
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+          }
+        });
+      }
+
+      // Reset Briefing Button
+      const resetBtn = document.getElementById('btn-agent-reset');
+      if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+          const chatFeed = document.getElementById('agent-chat-feed');
+          if (chatFeed) chatFeed.innerHTML = '';
+          appendAgentMessage(AGENT_PROBLEM_KNOWLEDGE['welcome']);
+        });
+      }
+
+      // Scenario Auditor Controls
+      const auditorRange = document.getElementById('auditor-cloud-range');
+      const auditorRangeLbl = document.getElementById('auditor-cloud-type-label');
+      const btnAudit = document.getElementById('btn-run-audit');
+
+      if (auditorRange) {
+        auditorRange.addEventListener('input', (e) => {
+          const val = parseInt(e.target.value, 10);
+          if (auditorRangeLbl) {
+            if (val > 80) {
+              auditorRangeLbl.innerText = `Deep Convective Cumulonimbus (${val}%)`;
+              auditorRangeLbl.style.color = '#ef4444';
+            } else if (val > 45) {
+              auditorRangeLbl.innerText = `Cumulus Mediocris (${val}%)`;
+              auditorRangeLbl.style.color = '#fbbf24';
+            } else {
+              auditorRangeLbl.innerText = `Thin Cirrus Haze (${val}%)`;
+              auditorRangeLbl.style.color = '#38bdf8';
+            }
+          }
+        });
+      }
+
+      if (btnAudit) {
+        btnAudit.addEventListener('click', runSceneProblemAudit);
+      }
+    }
+  }
+
+  // Floating Mini-Agent Context Updates
+  window.updateFloatingAgentContext = function(tabId) {
+    const contextEl = document.getElementById('floating-context-text');
+    if (!contextEl) return;
+
+    const contexts = {
+      overview: 'Overview context: 80%+ of North East India is obscured by cloud cover during monsoons, rendering optical satellite passes useless for up to 8 months.',
+      agent: 'Agent Command Center: Interactive mission briefing on optical degradation, Mie scattering, and multi-modal SAR reconstruction physics.',
+      sandbox: 'Sandbox Simulator context: Notice how thick clouds produce 0% direct optical transmission, necessitating Sentinel-1 SAR microwave guidance.',
+      architectures: 'Model Architectures context: The core challenge is preventing generative AI from hallucinating fictional structures without SAR guidance.',
+      metrics: 'Quantitative Analysis context: Unmitigated cloud shadows cause up to 68% false-positive water body misclassifications in flood mapping.',
+      details: 'Satellite Specs context: LISS-IV 5.8m optical bands (Green, Red, NIR) are blocked by water droplets, while 5.6cm C-band radar penetrates unimpeded.',
+      threedee: '3D Depth & Dehazing context: Satellite clouds have zero optical transmission (T ≈ 0), whereas ground haze retains partial light transmission.'
+    };
+
+    contextEl.innerText = contexts[tabId] || contexts.overview;
+  };
+
+  // Floating Mini-Agent Drawer Controls
+  const floatingTrigger = document.getElementById('btn-floating-agent-trigger');
+  const floatingDrawer = document.getElementById('floating-agent-drawer');
+  const floatingClose = document.getElementById('btn-close-floating-agent');
+  const floatingGotoFull = document.getElementById('btn-goto-full-agent');
+  const floatingRespBox = document.getElementById('floating-response-box');
+
+  if (floatingTrigger && floatingDrawer) {
+    floatingTrigger.addEventListener('click', () => {
+      floatingDrawer.classList.toggle('hidden');
+    });
+  }
+
+  if (floatingClose && floatingDrawer) {
+    floatingClose.addEventListener('click', () => {
+      floatingDrawer.classList.add('hidden');
+    });
+  }
+
+  if (floatingGotoFull) {
+    floatingGotoFull.addEventListener('click', () => {
+      if (floatingDrawer) floatingDrawer.classList.add('hidden');
+      switchTab('agent');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
+  // Floating Prompt Buttons
+  const floatingPrompts = document.querySelectorAll('.floating-prompt-btn');
+  floatingPrompts.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const qKey = btn.getAttribute('data-query');
+      const item = AGENT_PROBLEM_KNOWLEDGE[qKey];
+      if (item && floatingRespBox) {
+        floatingRespBox.innerHTML = `
+          <strong style="color: #38bdf8; display: block; margin-bottom: 4px;">${item.title}</strong>
+          <div>${item.speech || item.html}</div>
+        `;
+        if (agentVoiceEnabled) {
+          speakAgentText(item.speech || item.title);
+        }
+      }
+    });
+  });
+
   // --- Initial Setup Execution ---
   setTimeout(() => {
     switchTab('overview');
     resizeCanvases();
     updateQuantitativeMetrics();
+    updateFloatingAgentContext('overview');
   }, 100);
 
 });

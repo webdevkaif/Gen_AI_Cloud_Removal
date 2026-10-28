@@ -40,6 +40,18 @@
             Overview & Context
           </a>
         </li>
+        <li class="nav-item" data-tab="agent">
+          <a class="nav-link">
+            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2a2 2 0 0 1 2 2v2h4a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4V4a2 2 0 0 1 2-2z"/>
+              <circle cx="9" cy="12" r="1.5" fill="currentColor"/>
+              <circle cx="15" cy="12" r="1.5" fill="currentColor"/>
+              <path d="M10 16h4"/>
+            </svg>
+            Problem AI Agent
+            <span class="agent-nav-pill">AI BOT</span>
+          </a>
+        </li>
         <li class="nav-item" data-tab="sandbox">
           <a class="nav-link">
             <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -194,6 +206,311 @@
                   Average Structural Similarity Index (SSIM) across test sets using Latent Diffusion fusion.
                 </p>
               </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ==================== TAB: PROBLEM AI AGENT ==================== -->
+      <section id="agent" class="tab-content">
+        <div class="agent-layout">
+
+          <!-- Agent Command Center Header Banner -->
+          <div class="card agent-header-card">
+            <div class="agent-profile-wrap">
+              <div class="agent-avatar-ring">
+                <div class="agent-avatar-radar"></div>
+                <div class="agent-avatar-core">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2a2 2 0 0 1 2 2v2h4a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4V4a2 2 0 0 1 2-2z"/>
+                    <circle cx="9" cy="12" r="1.5" fill="currentColor"/>
+                    <circle cx="15" cy="12" r="1.5" fill="currentColor"/>
+                    <path d="M10 16h4"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="agent-title-group">
+                <div class="agent-badge-row">
+                  <span class="status-badge agent-live-badge"><span class="status-dot"></span>AGENT ONLINE</span>
+                  <span class="agent-specialty-badge">Remote Sensing Physicist & Problem Specialist</span>
+                </div>
+                <h2 class="agent-name">AeroSense-10 <span class="agent-subname">Mission Problem Analyst</span></h2>
+                <p class="agent-desc">
+                  Autonomous intelligence agent specialized in ISRO LISS-IV optical sensor degradation, atmospheric Mie scattering, seasonal monsoon cloud occlusions in North East India, and multi-modal SAR generative recovery.
+                </p>
+              </div>
+            </div>
+            
+            <div class="agent-header-controls">
+              <button id="btn-agent-voice-toggle" class="btn-voice-toggle" title="Toggle audio voice readout">
+                <span class="voice-wave-icon">
+                  <span class="wave-bar"></span>
+                  <span class="wave-bar"></span>
+                  <span class="wave-bar"></span>
+                </span>
+                <span id="agent-voice-btn-text">Voice Briefing: OFF</span>
+              </button>
+              <button id="btn-agent-reset" class="btn-secondary-sm" title="Re-run opening briefing">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="1 4 1 10 7 10"></polyline>
+                  <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                </svg>
+                <span>Reset Briefing</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Problem Severity Metrics Grid -->
+          <div class="problem-metrics-grid">
+            <div class="card problem-stat-card">
+              <div class="problem-stat-icon red">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
+                </svg>
+              </div>
+              <div class="problem-stat-data">
+                <div class="problem-stat-val">84.6%</div>
+                <div class="problem-stat-label">NER Monsoon Cloud Cover</div>
+                <div class="problem-stat-desc">North Eastern Region of India suffers persistent cloud obscuration up to 8 months/year.</div>
+              </div>
+            </div>
+
+            <div class="card problem-stat-card">
+              <div class="problem-stat-icon amber">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/>
+                  <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
+                </svg>
+              </div>
+              <div class="problem-stat-data">
+                <div class="problem-stat-val">0.0%</div>
+                <div class="problem-stat-label">Direct Optical Transmittance</div>
+                <div class="problem-stat-desc">Cumulonimbus droplets (r ~ 15µm) trigger total Mie scattering extinction across VNIR bands.</div>
+              </div>
+            </div>
+
+            <div class="card problem-stat-card">
+              <div class="problem-stat-icon purple">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+                  <line x1="12" y1="9" x2="12" y2="13"/>
+                  <line x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+              </div>
+              <div class="problem-stat-data">
+                <div class="problem-stat-val">68.4%</div>
+                <div class="problem-stat-label">Shadow Flood Misclassification</div>
+                <div class="problem-stat-desc">Cloud shadows produce false-positive water bodies in downstream LULC and flood mapping.</div>
+              </div>
+            </div>
+
+            <div class="card problem-stat-card">
+              <div class="problem-stat-icon green">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2v20M2 12h20"/>
+                  <circle cx="12" cy="12" r="6"/>
+                  <circle cx="12" cy="12" r="2"/>
+                </svg>
+              </div>
+              <div class="problem-stat-data">
+                <div class="problem-stat-val">5.6 cm</div>
+                <div class="problem-stat-label">SAR Microwave Penetration</div>
+                <div class="problem-stat-desc">Sentinel-1 C-band radar penetrates all clouds, providing the physical structural baseline.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main Interactive Problem Workspace (Two Columns) -->
+          <div class="agent-main-grid">
+            
+            <!-- Left: Interactive Problem Dialogue Engine -->
+            <div class="card agent-chat-card">
+              <div class="agent-chat-header">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                  <div class="chat-status-pulse"></div>
+                  <h3 class="card-title" style="margin-bottom: 0;">Interactive Problem Dialogue</h3>
+                </div>
+                <div style="font-size: 0.75rem; color: var(--text-muted);">Ask any question or pick a prompt below</div>
+              </div>
+
+              <!-- Suggested Query Chips -->
+              <div class="agent-chips-wrap">
+                <div class="agent-chip" data-query="core-problem">
+                  <span>⚡ What is the core problem?</span>
+                </div>
+                <div class="agent-chip" data-query="ner-monsoon">
+                  <span>⛈️ Why is North East India vulnerable?</span>
+                </div>
+                <div class="agent-chip" data-query="optical-physics">
+                  <span>🔬 Why does optical fail (Mie scattering)?</span>
+                </div>
+                <div class="agent-chip" data-query="shadow-deception">
+                  <span>🌊 How do cloud shadows corrupt flood maps?</span>
+                </div>
+                <div class="agent-chip" data-query="sar-radar">
+                  <span>📡 Why can SAR penetrate clouds?</span>
+                </div>
+                <div class="agent-chip" data-query="hallucination">
+                  <span>⚠️ What is the risk of AI hallucination?</span>
+                </div>
+                <div class="agent-chip" data-query="mosaicking">
+                  <span>⏳ Why not use last month's clear satellite photo?</span>
+                </div>
+                <div class="agent-chip" data-query="dehazing-vs-cloud">
+                  <span>🏔️ Terrestrial dehazing vs satellite cloud removal?</span>
+                </div>
+              </div>
+
+              <!-- Chat Message Feed -->
+              <div id="agent-chat-feed" class="agent-chat-feed">
+                <!-- Initial Agent Welcome Message injected by JS -->
+              </div>
+
+              <!-- Chat Input Bar -->
+              <div class="agent-input-bar">
+                <input type="text" id="agent-user-input" class="agent-input-field" placeholder="Ask AeroSense anything about the remote sensing problem..." autocomplete="off">
+                <button id="btn-agent-send" class="btn-primary agent-send-btn" title="Send question to Problem Agent">
+                  <span>Ask</span>
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Right: Interactive Scenario Problem Auditor & Scanner -->
+            <div class="card agent-auditor-card">
+              <div class="agent-auditor-header">
+                <div>
+                  <h3 class="card-title">Live Scene Problem Auditor</h3>
+                  <div style="font-size: 0.8rem; color: var(--text-muted);">Simulate atmospheric degradation across regional target sites</div>
+                </div>
+                <span class="agent-hud-badge">HUD SCANNER</span>
+              </div>
+
+              <div class="auditor-form">
+                <div class="control-group">
+                  <label class="control-label">Target Region Site</label>
+                  <select id="auditor-region" class="control-input">
+                    <option value="shillong">Shillong Plateau (Valley & Dense Pine Forest)</option>
+                    <option value="cherrapunji" selected>Cherrapunji / Sohra (Extreme Orographic Cloud Barrier)</option>
+                    <option value="guwahati">Guwahati (Riverine Brahmaputra Basin & Urban Grid)</option>
+                    <option value="gangtok">Gangtok / Kanchenjunga (High Elevation Snow Peaks)</option>
+                  </select>
+                </div>
+
+                <div class="control-group">
+                  <label class="control-label">
+                    <span>Cloud Thickness & Morphology</span>
+                    <span id="auditor-cloud-type-label" style="color: var(--color-warning); font-weight: 600;">Deep Convective Cumulonimbus (92%)</span>
+                  </label>
+                  <input type="range" id="auditor-cloud-range" min="15" max="98" value="92" class="control-range">
+                  <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text-muted); margin-top: 4px;">
+                    <span>Thin Cirrus (15%)</span>
+                    <span>Cumulus (55%)</span>
+                    <span>Heavy Convective (98%)</span>
+                  </div>
+                </div>
+
+                <button id="btn-run-audit" class="btn-primary" style="width: 100%; justify-content: center; gap: 0.6rem; padding: 0.85rem;">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                  </svg>
+                  <span>⚡ Run Agent Problem Scan</span>
+                </button>
+              </div>
+
+              <!-- Live Diagnostic Scan HUD Output -->
+              <div id="auditor-scan-results" class="auditor-results-hud">
+                <div class="hud-scanner-bar" id="hud-scanner-bar"></div>
+                <div class="hud-header">
+                  <span class="hud-tag">SPECTRUM DEGRADATION TELEMETRY</span>
+                  <span class="hud-timestamp" id="hud-timestamp">REAL-TIME</span>
+                </div>
+
+                <div class="hud-metrics-row">
+                  <div class="hud-metric-box">
+                    <span class="hud-metric-lbl">Optical Extinction</span>
+                    <span class="hud-metric-num text-danger" id="hud-extinction">-34.8 dB</span>
+                  </div>
+                  <div class="hud-metric-box">
+                    <span class="hud-metric-lbl">Shadow Flood Risk</span>
+                    <span class="hud-metric-num text-warning" id="hud-shadow-risk">87.5%</span>
+                  </div>
+                  <div class="hud-metric-box">
+                    <span class="hud-metric-lbl">LISS-IV Blindness</span>
+                    <span class="hud-metric-num text-danger" id="hud-blindness">92.0%</span>
+                  </div>
+                  <div class="hud-metric-box">
+                    <span class="hud-metric-lbl">SAR Retained Cues</span>
+                    <span class="hud-metric-num text-success" id="hud-sar-cues">98.2%</span>
+                  </div>
+                </div>
+
+                <div class="hud-diagnosis-box">
+                  <div class="hud-diagnosis-title">
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="var(--color-warning)" stroke-width="2" fill="none"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                    <span>Agent Diagnostic Verdict</span>
+                  </div>
+                  <p class="hud-diagnosis-body" id="hud-diagnosis-text">
+                    Deep convective cumulonimbus in Cherrapunji creates 100% optical opacity. Mie scattering completely extinguishes Green, Red, and NIR bands. Ground terrain is totally invisible to LISS-IV. Sentinel-1 C-band SAR radar backscatter (VV/VH) is MANDATORY to bypass cloud particles and anchor generative latent diffusion.
+                  </p>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- Structured Problem Breakdown Pillars -->
+          <div class="card" style="margin-top: 1rem;">
+            <h3 class="card-title" style="margin-bottom: 0.5rem;">The Four Fundamental Pillars of the Cloud Problem</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">
+              Comprehensive scientific breakdown curated by AeroSense-10 on why cloud contamination remains the single hardest bottleneck in optical earth observation.
+            </p>
+
+            <div class="problem-pillars-grid">
+              
+              <div class="problem-pillar-card">
+                <div class="pillar-num">01</div>
+                <h4 class="pillar-title">Atmospheric Mie Scattering</h4>
+                <p class="pillar-desc">
+                  Cloud droplets (diameter 10–30 µm) are significantly larger than visible light wavelengths (0.4–0.9 µm). Non-selective Mie scattering scatters 99.8% of photons in all directions, turning the atmosphere into a solid white diffuse reflector and suffocating surface radiance.
+                </p>
+                <div class="pillar-tag">Physical Extinction: T(x) ≈ 0</div>
+              </div>
+
+              <div class="problem-pillar-card">
+                <div class="pillar-num">02</div>
+                <h4 class="pillar-title">The Temporal Invalidation Trap</h4>
+                <p class="pillar-desc">
+                  Traditional compositing replaces clouds with clear images from prior months. But in monsoonal NER, clear passes don't happen for 4–5 months. By then, crops have shifted, floodwaters have moved, and infrastructure has changed—making past images useless for real-time monitoring.
+                </p>
+                <div class="pillar-tag">Temporal Lag: 90–150 Days</div>
+              </div>
+
+              <div class="problem-pillar-card">
+                <div class="pillar-num">03</div>
+                <h4 class="pillar-title">Cloud Shadow Spectral Mimicry</h4>
+                <p class="pillar-desc">
+                  Thick cloud shadows plunge surface irradiance to near zero. In VNIR bands, cloud shadows mimic open water and flooded fields with identical low reflectance. Automated classification models report massive false flood disasters, misguiding emergency response teams.
+                </p>
+                <div class="pillar-tag">False Water Rate: Up to 74%</div>
+              </div>
+
+              <div class="problem-pillar-card">
+                <div class="pillar-num">04</div>
+                <h4 class="pillar-title">AI Hallucination vs Physical Grounding</h4>
+                <p class="pillar-desc">
+                  When pure generative models (like unconditional GANs) are tasked to inpaint huge cloud occlusions, they invent fictitious villages, fake roads, and nonexistent rivers. The challenge is strictly conditioning generative diffusion on cloud-penetrating Sentinel-1 SAR microwave radar cues.
+                </p>
+                <div class="pillar-tag">Solution: SAR Multi-Modal Fusion</div>
+              </div>
+
             </div>
           </div>
 
@@ -905,6 +1222,83 @@
       </section>
 
     </main>
+  </div>
+
+  <!-- Floating AI Problem Agent Quick Widget -->
+  <div id="floating-agent-root" class="floating-agent-root">
+    
+    <!-- Floating Drawer / Popover -->
+    <div id="floating-agent-drawer" class="floating-agent-drawer hidden">
+      <div class="floating-drawer-header">
+        <div style="display: flex; align-items: center; gap: 0.6rem;">
+          <div class="floating-drawer-avatar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2a2 2 0 0 1 2 2v2h4a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4V4a2 2 0 0 1 2-2z"/>
+              <circle cx="9" cy="12" r="1.5" fill="currentColor"/>
+              <circle cx="15" cy="12" r="1.5" fill="currentColor"/>
+              <path d="M10 16h4"/>
+            </svg>
+          </div>
+          <div>
+            <div style="font-weight: 700; font-size: 0.9rem; color: #fff;">AeroSense AI Assistant</div>
+            <div style="font-size: 0.7rem; color: var(--color-primary); font-family: monospace;">PROBLEM DIAGNOSTIC ACTIVE</div>
+          </div>
+        </div>
+        <button id="btn-close-floating-agent" class="floating-close-btn" title="Close assistant">
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="floating-drawer-body">
+        <div class="floating-context-box">
+          <span class="floating-context-tag">CURRENT VIEW CONTEXT</span>
+          <p id="floating-context-text" style="margin-top: 4px; font-size: 0.8rem; line-height: 1.4; color: var(--text-main);">
+            LISS-IV optical satellite imagery is severely occluded by cloud particles. Fusing Sentinel-1 SAR radar solves the optical blindspot.
+          </p>
+        </div>
+
+        <div class="floating-quick-links">
+          <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Quick Problem Questions:</div>
+          <button class="floating-prompt-btn" data-query="core-problem">What is the core problem?</button>
+          <button class="floating-prompt-btn" data-query="optical-physics">Why does optical fail?</button>
+          <button class="floating-prompt-btn" data-query="shadow-deception">How do shadows fool flood maps?</button>
+        </div>
+
+        <div id="floating-response-box" class="floating-response-box">
+          <div style="color: var(--text-muted); font-size: 0.8rem; font-style: italic;">
+            Click a question above or open the complete Mission Briefing Center below.
+          </div>
+        </div>
+      </div>
+
+      <div class="floating-drawer-footer">
+        <button class="btn-primary" id="btn-goto-full-agent" style="width: 100%; justify-content: center; font-size: 0.85rem; padding: 0.6rem;">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg>
+          <span>Open Full Problem Agent Center</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Floating Trigger Pill Button -->
+    <button id="btn-floating-agent-trigger" class="floating-trigger-btn" title="Open Problem AI Agent">
+      <span class="trigger-radar-ping"></span>
+      <span class="trigger-icon-wrap">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2a2 2 0 0 1 2 2v2h4a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4V4a2 2 0 0 1 2-2z"/>
+          <circle cx="9" cy="12" r="1.5" fill="currentColor"/>
+          <circle cx="15" cy="12" r="1.5" fill="currentColor"/>
+          <path d="M10 16h4"/>
+        </svg>
+      </span>
+      <span class="trigger-text">Problem AI Agent</span>
+      <span class="trigger-status-dot"></span>
+    </button>
+
   </div>
 
   <!-- Include Application Code -->
